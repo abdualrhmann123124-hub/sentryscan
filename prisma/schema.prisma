@@ -1,0 +1,27 @@
+// SentryScan data model.
+// Uses SQLite so the MVP runs with zero external database setup.
+// Swap the datasource to postgresql + DATABASE_URL when you're ready for production.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Scan {
+  id         String   @id @default(cuid())
+  target     String
+  hostname   String
+  score      Int
+  findings   String // JSON-encoded Finding[]
+  meta       String // JSON-encoded ScanReport["meta"]
+  errors     String // JSON-encoded string[]
+  durationMs Int
+  createdAt  DateTime @default(now())
+
+  @@index([hostname])
+  @@index([createdAt])
+}
